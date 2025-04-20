@@ -1,129 +1,201 @@
-import React, { useContext } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import './Main.css'
 import { assets } from '../../assets/assets'
 import { Context } from '../../context/Context'
 
 const Main = () => {
     const {onSent, recentPrompt, showResult, loading, resultData, setInput, input} = useContext(Context)
+    const fileInputRef = useRef(null)
+    const [isRecording, setIsRecording] = useState(false)
+    const mediaRecorderRef = useRef(null)
+    const chunksRef = useRef([])
+
+    const handleImageUpload = async (event) => {
+        const file = event.target.files[0]
+        if (file) {
+            if (file.type.startsWith('image/')) {
+                try {
+                    // Create a placeholder text for the image
+                    const imagePlaceholder = `[Analyzing image: ${file.name}]`
+                    setInput(imagePlaceholder)
+
+                    // Convert image to base64
+                    const reader = new FileReader()
+                    reader.onload = async (e) => {
+                        const base64Image = e.target.result
+                        // You can modify this part to handle the image in your context
+                        onSent(base64Image)
+                    }
+                    reader.readAsDataURL(file)
+                } catch (error) {
+                    console.error('Error processing image:', error)
+                    setInput('Error uploading image. Please try again.')
+                }
+            } else {
+                setInput('Please upload an image file.')
+            }
+        }
+    }
+
+    const handleVoiceRecording = async () => {
+        if (!isRecording) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+                mediaRecorderRef.current = new MediaRecorder(stream)
+                chunksRef.current = []
+
+                mediaRecorderRef.current.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        chunksRef.current.push(e.data)
+                    }
+                }
+
+                mediaRecorderRef.current.onstop = async () => {
+                    const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
+                    try {
+                        // Convert speech to text using Web Speech API
+                        const text = await speechToText(audioBlob)
+                        setInput(text)
+                    } catch (error) {
+                        console.error('Speech to text error:', error)
+                        setInput('Error processing voice. Please try again.')
+                    }
+
+                    // Stop all audio tracks
+                    stream.getTracks().forEach(track => track.stop())
+                }
+
+                mediaRecorderRef.current.start()
+                setIsRecording(true)
+                setInput('Recording...')
+            } catch (error) {
+                console.error('Error starting recording:', error)
+                setInput('Error accessing microphone. Please check permissions.')
+            }
+        } else {
+            mediaRecorderRef.current.stop()
+            setIsRecording(false)
+        }
+    }
+
+    const speechToText = (audioBlob) => {
+        return new Promise((resolve, reject) => {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
+            recognition.lang = 'en-US'
+            recognition.interimResults = false
+            recognition.maxAlternatives = 1
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript
+                resolve(transcript)
+            }
+
+            recognition.onerror = (event) => {
+                reject(event.error)
+            }
+
+            // Convert blob to audio element and play it for recognition
+            const audio = new Audio(URL.createObjectURL(audioBlob))
+            audio.play()
+            recognition.start()
+        })
+    }
 
     return (
         <div className='main'>
             <div className="nav">
-                <div className="nav-left">
-                    <img src={assets.gemini_icon} alt="logo" className="nav-logo" />
-                    <p>AI-StudyMate</p>
-                </div>
-                <div className="nav-right">
-                    <img src={assets.user_icon} alt="user" className="nav-user" />
-                </div>
+                <p>BwAI-Minna 2025</p>
+                <img src={assets.user_icon} alt="" />
             </div>
-            
             <div className="main-container">
-                {!showResult ? (
-                    <>
-                        <div className="welcome-section">
-                            <h1>Hello, what would you like to learn today?</h1>
-                            <p className="subtitle">AI-StudyMate can help you understand complex topics</p>
-                        </div>
-                        
-                        <div className="suggestions">
-                            <div className="suggestion-row">
-                                <div className="suggestion-card">
-                                    <img src={assets.compass_icon} alt="" />
-                                    <h3>Explain concepts</h3>
-                                    <p>Like "What are superconductors and how do they work?"</p>
-                                </div>
-                                <div className="suggestion-card">
-                                    <img src={assets.bulb_icon} alt="" />
-                                    <h3>Summarize topics</h3>
-                                    <p>Ask me to break down complex subjects into simple terms</p>
-                                </div>
-                            </div>
-                            <div className="suggestion-row">
-                                <div className="suggestion-card">
-                                    <img src={assets.message_icon} alt="" />
-                                    <h3>Practice questions</h3>
-                                    <p>Get help with study materials and practice problems</p>
-                                </div>
-                                <div className="suggestion-card">
-                                    <img src={assets.code_icon} alt="" />
-                                    <h3>Code assistance</h3>
-                                    <p>Get help understanding and improving code</p>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <div className="chat-container">
-                        <div className="chat-message user-message">
-                            <img src={assets.user_icon} alt="" />
-                            <div className="message-content">
-                                <p>{recentPrompt}</p>
-                            </div>
-                        </div>
-                        <div className="chat-message ai-message">
-                            <img src={assets.gemini_icon} alt="" />
-                            <div className="message-content">
-                                {loading ? (
-                                    <div className="typing-indicator">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                ) : (
-                                    <p dangerouslySetInnerHTML={{__html: resultData}}></p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
 
-                <div className="input-container">
-                    <div className="text-input-field with-toolbox-drawer">
-                        <div className="text-input-field-wrapper">
-                            <div className="text-input-field-main-area">
-                                <div className="text-input-inner">
-                                    <div className="rich-textarea">
-                                        <input 
-                                            type="text"
-                                            className="textarea new-input-ui"
-                                            placeholder="Ask AI-StudyMate..."
-                                            value={input}
-                                            onChange={(e) => setInput(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && input && onSent()}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                {!showResult
+                ?<>
+                    <div className="greet">
+                    <p><span>Hello, Friend</span></p>
+                    <p>How can I help you today?</p>
+                </div>
+                <div className="cards">
+                    <div className="card">
+                        <p>Explain Superconductors</p>
+                        <img src={assets.compass_icon} alt="" />
+                    </div>
+                    <div className="card">
+                        <p>Briefly summarize this concept: urban planning</p>
+                        <img src={assets.bulb_icon} alt="" />
+                    </div>
+                    <div className="card">
+                        <p>Brainstorm some questions on Clapyron theorem of three moment equation with me</p>
+                        <img src={assets.message_icon} alt="" />
+                    </div>
+                    <div className="card">
+                        <p>Improve the readability of the following code</p>
+                        <img src={assets.code_icon} alt="" />
+                    </div>
+                </div>
+                </>
+                :<div className="result">
+                    <div className="result-title">
+                        <img src={assets.user_icon} alt="" />
+                        <p>{recentPrompt}</p>
+                    </div>
+                    <div className="result-data">
+                        <img src={assets.gemini_icon} alt="" />
+                        {loading
+                        ?<div className="loader">
+                            <hr />
+                            <hr />
+                            <hr />
                         </div>
-                        <div className="actions-wrapper">
-                            <div className="leading-actions">
-                                <button className="action-btn upload-btn">
-                                    <i className="ri-add-line"></i>
-                                </button>
-                                <button className="action-btn">
-                                    <i className="ri-compass-3-line"></i>
-                                </button>
-                                <button className="action-btn">
-                                    <i className="ri-edit-line"></i>
-                                </button>
-                            </div>
-                            <div className="trailing-actions">
-                                <button className="action-btn">
-                                    <i className="ri-mic-line"></i>
-                                </button>
-                                <button 
-                                    className={`send-btn ${!input ? 'disabled' : ''}`}
-                                    onClick={input ? onSent : undefined}
-                                    disabled={!input}
-                                >
-                                    <i className="ri-send-plane-line"></i>
-                                </button>
-                            </div>
+                        :<p dangerouslySetInnerHTML={{__html:resultData}}></p>
+                        }
+                    </div>
+                </div>
+                }
+
+                
+
+                <div className="main-bottom">
+                    <div className="search-box">
+                        <input 
+                            onChange={(e)=>setInput(e.target.value)}
+                            value={input}
+                            type="text"
+                            placeholder="Ask BwAI-Minna"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && input) {
+                                    onSent();
+                                }
+                            }}
+                        />
+                        <div>
+                            <input 
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleImageUpload}
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                            />
+                            <img 
+                                src={assets.gallery_icon} 
+                                alt="Upload image" 
+                                onClick={() => fileInputRef.current.click()}
+                                style={{ cursor: 'pointer' }}
+                            />
+                            <img 
+                                src={isRecording ? assets.mic_icon_active : assets.mic_icon} 
+                                alt="Voice recording" 
+                                onClick={handleVoiceRecording}
+                                style={{ 
+                                    cursor: 'pointer',
+                                    filter: isRecording ? 'invert(23%) sepia(86%) saturate(2526%) hue-rotate(356deg) brightness(94%) contrast(93%)' : 'none'
+                                }}
+                            />
+                            {input?<img onClick={()=>onSent()} src={assets.send_icon} alt="" />:null}
                         </div>
                     </div>
-                    <p className="input-info">
-                        AI-StudyMate may display inaccurate info • Built With AI Minna - 2025
+                    <p className="bottom-info">
+                        BwAI-Minna 2025
                     </p>
                 </div>
             </div>
