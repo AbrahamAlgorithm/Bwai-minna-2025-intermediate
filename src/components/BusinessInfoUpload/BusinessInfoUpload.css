@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Space+Grotesk:wght@400;500&display=swap');
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: #f5f4f2;
+  margin: 0;
+  color: #1e1e1e;
+}
+
+.business-info-page {
+  display: flex;
+  height: 100vh;
+  background-color: #f5f4f2;
+}
+
+.business-info-container {
+  flex: 1;
+  padding: 4rem 6rem;
+  padding-left: 13rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.info-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.info-textarea {
+  width: 100%;
+  max-width: 900px;
+  min-width: 600px;
+  height: 300px;
+  padding: 1.25rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #1e1e1e;
+  resize: vertical;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.info-textarea::placeholder {
+  color: #aaa;
+}
+
+.save-button {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.save-button:hover {
+  background-color: #2a2a2a;
+}
