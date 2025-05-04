@@ -1,56 +1,149 @@
-import React, { useState, useContext } from 'react'
-import './Sidebar.css'
-import { assets } from '../../assets/assets'
-import { Context } from '../../context/Context'
+import React, { useState, useContext } from "react";
+import "./Sidebar.css";
+import { assets } from "../../assets/assets";
+import { Context } from "../../context/Context";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
-    const [extended, setExtended] = useState(false)
-    const { onSent, prevPrompts, setRecentPrompt, newChat } = useContext(Context)
+  const [extended, setExtended] = useState(false);
+  const { onSent, prevPrompts, setRecentPrompt, newChat } = useContext(Context);
 
-    const loadPrompt = async (promptObj) => {
-        setRecentPrompt(promptObj.prompt)
-        await onSent(promptObj.prompt)
-    }
+  const loadPrompt = async (promptObj) => {
+    setRecentPrompt(promptObj.prompt);
+    await onSent(promptObj.prompt);
+  };
 
-    return (
-        <div className='sidebar'>
-            <div className="top">
-                <img onClick={() => setExtended(prev => !prev)} className='menu' src={assets.menu_icon} alt="" />
-                <div onClick={() => newChat()} className="new-chat">
-                    <img src={assets.plus_icon} alt="" />
-                    {extended ? <p>New Chat</p> : null}
-                </div>
-                {extended
-                    ? <div className="recent">
-                        <p className="recent-title">Recent Chats</p>
-                        {prevPrompts.map((item, index) => {
-                            return (
-                                <div key={index} onClick={() => loadPrompt(item)} className="recent-entry">
-                                    <img src={assets.message_icon} alt="" />
-                                    <p>{item.prompt.slice(0, 18)} ...</p>
-                                </div>
-                            )
-                        })}
-                    </div>
-                    : null
-                }
-            </div>
-            <div className="bottom">
-                <div className="bottom-item recent-entry">
-                    <img src={assets.question_icon} alt="" />
-                    {extended ? <p>Help</p> : null}
-                </div>
-                <div className="bottom-item recent-entry">
-                    <img src={assets.history_icon} alt="" />
-                    {extended ? <p>Activity</p> : null}
-                </div>
-                <div className="bottom-item recent-entry">
-                    <img src={assets.setting_icon} alt="" />
-                    {extended ? <p>Setting</p> : null}
-                </div>
-            </div>
+  return (
+    <div className="sidebar">
+      <div className="top">
+        <img
+          onClick={() => setExtended((prev) => !prev)}
+          className="menu"
+          src={assets.menu_icon}
+          alt=""
+        />
+        <div onClick={() => newChat()} className="new-chat">
+          <img src={assets.plus_icon} alt="" />
+          {extended ? <p>New Chat</p> : null}
         </div>
-    )
-}
+        {extended ? (
+          <div className="recent">
+            <p className="recent-title">Recent Chats</p>
+            {prevPrompts.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  onClick={() => loadPrompt(item)}
+                  className="recent-entry"
+                >
+                  <img src={assets.message_icon} alt="" />
+                  <p>{item.prompt.slice(0, 18)} ...</p>
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+      <NavLink
+        to="/BusinessAI"
+        className={({ isActive }) =>
+          `sidebar-link ${isActive ? "active-link" : ""}`
+        }
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="#333030"
+            d="m20.713 7.128l-.246.566a.506.506 0 0 1-.934 0l-.246-.566a4.36 4.36 0 0 0-2.22-2.25l-.759-.339a.53.53 0 0 1 0-.963l.717-.319A4.37 4.37 0 0 0 19.276.931L19.53.32a.506.506 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.718.32a.53.53 0 0 1 0 .962l-.76.338a4.36 4.36 0 0 0-2.219 2.251M9 2a8 8 0 0 1 7.934 6.965l2.25 3.539c.148.233.118.58-.225.728L17 14.07V17a2 2 0 0 1-2 2h-1.999L13 22H4v-3.694c0-1.18-.436-2.297-1.244-3.305A8 8 0 0 1 9 2m12.154 16.102l-1.665-1.11A8.96 8.96 0 0 0 21 12q-.001-.767-.124-1.5l1.943-.5q.18.975.181 2c0 2.258-.68 4.356-1.846 6.102"
+          />
+        </svg>
+        {extended ? <span>New AI Page</span> : null}
+      </NavLink>
+      <NavLink
+        to="/BusinessInfoUpload"
+        className={({ isActive }) =>
+          `sidebar-link ${isActive ? "active-link" : ""}`
+        }
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 14 14"
+        >
+          <path
+            fill="#333030"
+            fill-rule="evenodd"
+            d="M.552 2.278c0-.155.077-.368.357-.63s.722-.527 1.319-.762C3.418.416 5.105.112 7 .112s3.582.304 4.772.774c.597.235 1.038.5 1.32.762c.28.262.356.475.356.63s-.077.368-.357.63c-.28.261-.722.526-1.319.762c-1.19.47-2.877.774-4.772.774S3.418 4.14 2.228 3.67c-.597-.236-1.038-.5-1.32-.763c-.28-.261-.356-.474-.356-.63Zm12.96 1.89a6.3 6.3 0 0 1-1.281.665c-1.37.54-3.22.86-5.231.86c-2.012 0-3.861-.32-5.231-.86a6.3 6.3 0 0 1-1.281-.666v3.178c.056.085.135.178.246.279c.29.263.745.53 1.36.766c1.224.471 2.959.776 4.906.776s3.682-.305 4.907-.776c.614-.237 1.069-.503 1.359-.766q.163-.151.246-.28zM.488 11.208V8.993c.341.213.732.4 1.156.564c1.402.539 3.295.859 5.356.859s3.954-.32 5.356-.86a7 7 0 0 0 1.156-.563v2.216C13.512 12.749 10.597 14 7 14S.488 12.75.488 11.209Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        {extended ? <span>Set Business Info</span> : null}
+      </NavLink>
+      <NavLink
+        to="/ImageAI"
+        className={({ isActive }) =>
+          `sidebar-link ${isActive ? "active-link" : ""}`
+        }
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="#333030"
+            d="M23.451 5.906a6.98 6.98 0 0 0-5.375-5.39C16.727.204 14.508 0 12 0S7.273.204 5.924.516a6.98 6.98 0 0 0-5.375 5.39C.237 7.26.034 9.485.034 12s.203 4.74.515 6.094a6.98 6.98 0 0 0 5.375 5.39C7.273 23.796 9.492 24 12 24s4.727-.204 6.076-.516a6.98 6.98 0 0 0 5.375-5.39c.311-1.354.515-3.578.515-6.094c0-2.515-.203-4.74-.515-6.094m-5.873 12.396l-.003.001c-.428.152-1.165.283-2.102.377l-.147.014a.44.44 0 0 1-.45-.271a1.82 1.82 0 0 0-1.296-1.074c-.351-.081-.928-.134-1.58-.134s-1.229.053-1.58.134a1.82 1.82 0 0 0-1.291 1.062a.47.47 0 0 1-.471.281l-.129-.012c-.938-.094-1.676-.224-2.105-.377l-.003-.001a.76.76 0 0 1-.492-.713q.001-.049.005-.098c.073-.979.666-3.272 1.552-5.89C8.5 8.609 9.559 6.187 10.037 5.714a1 1 0 0 1 .404-.26l.004-.002c.314-.106.892-.178 1.554-.178c.663 0 1.241.071 1.554.178l.005.002a1 1 0 0 1 .405.26c.478.472 1.537 2.895 2.549 5.887c.886 2.617 1.479 4.91 1.552 5.89q.004.049.005.098a.76.76 0 0 1-.491.713"
+          />
+        </svg>
+        {extended ? <span>Image AI Assistant</span> : null}
+      </NavLink>
 
-export default Sidebar
+      <NavLink
+        to="/ImageUpload"
+        className={({ isActive }) =>
+          `sidebar-link ${isActive ? "active-link" : ""}`
+        }
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="#333030"
+            d="M16.25 2.75h-8.5A5.76 5.76 0 0 0 2 8.5v7a5.76 5.76 0 0 0 5.75 5.75h8.5A5.76 5.76 0 0 0 22 15.5v-7a5.76 5.76 0 0 0-5.75-5.75M8 6.1a2.41 2.41 0 1 1-.922 4.635A2.41 2.41 0 0 1 8.01 6.1zm12.5 6.68l-2.18-1.69a3.26 3.26 0 0 0-4.17.37l-2.33 2.33a3 3 0 0 1-3.72.36a1.48 1.48 0 0 0-.94-.24a1.46 1.46 0 0 0-.88.42l-2.43 2.84a4.25 4.25 0 0 1-.35-1.91l1.68-1.95a3 3 0 0 1 3.76-.41a1.43 1.43 0 0 0 1.82-.18l2.33-2.32a4.77 4.77 0 0 1 6.13-.51l1.28 1z"
+          />
+          <path
+            fill="#333030"
+            d="M8.91 8.51a.91.91 0 1 1-1.82 0a.91.91 0 0 1 1.82 0"
+          />
+        </svg>
+        {extended ? <span>Image Upload</span> : null}
+      </NavLink>
+
+      <div className="bottom">
+        <div className="bottom-item recent-entry">
+          <img src={assets.question_icon} alt="" />
+          {extended ? <p>Help</p> : null}
+        </div>
+        <div className="bottom-item recent-entry">
+          <img src={assets.history_icon} alt="" />
+          {extended ? <p>Activity</p> : null}
+        </div>
+        <div className="bottom-item recent-entry">
+          <img src={assets.setting_icon} alt="" />
+          {extended ? <p>Setting</p> : null}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
