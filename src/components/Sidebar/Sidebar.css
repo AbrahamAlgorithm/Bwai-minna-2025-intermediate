@@ -6,7 +6,7 @@
     align-items: center;
     background-color: #e2e6eb;
     padding: 25px 15px;
-    gap: 40px; /* Adjust the gap for vertical spacing */
+    gap: 40px; 
 }
 
 .sidebar img{
@@ -24,7 +24,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-bottom: 60px; /* Adds visual separation */
+    margin-bottom: 60px;
 }
 
 .sidebar .menu {
