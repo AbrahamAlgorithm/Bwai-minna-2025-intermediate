@@ -23,9 +23,9 @@ const App = () => {
     <div className="app">
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+        <Route path="/" element={<BusinessInfoUpload />} />
           <Route path="/businessAI" element={  <BusinessAIProvider> <BusinessAI /> </BusinessAIProvider>} />
-          <Route path="/businessInfoUpload" element={<BusinessInfoUpload />} />
+   
           <Route path="/imageAI" element={<ImageAIProvider><ImagePage /></ImageAIProvider>} />
           <Route path="/imageUpload" element={<ImageUpload />} />
          

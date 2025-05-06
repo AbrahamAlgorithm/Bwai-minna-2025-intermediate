@@ -2,10 +2,11 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     background-color: #e2e6eb;
     padding: 25px 15px;
+    gap: 40px; /* Adjust the gap for vertical spacing */
 }
 
 .sidebar img{
@@ -17,6 +18,22 @@
     margin-left: 10px;
     cursor: pointer;
 }
+
+.sidebar-header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 60px; /* Adds visual separation */
+}
+
+.sidebar .menu {
+    width: 25px;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: -80px; /* Remove extra left margin */
+}
+
 
 .sidebar .new-chat {
     margin-top: 50px;
