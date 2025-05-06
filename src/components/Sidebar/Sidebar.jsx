@@ -1,70 +1,24 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import "./Sidebar.css";
 import { assets } from "../../assets/assets";
-import { Context } from "../../context/Context";
 import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   const [extended, setExtended] = useState(false);
-  const { onSent, prevPrompts, setRecentPrompt, newChat } = useContext(Context);
-
-  const loadPrompt = async (promptObj) => {
-    setRecentPrompt(promptObj.prompt);
-    await onSent(promptObj.prompt);
-  };
 
   return (
     <div className="sidebar">
-      <div className="top">
-        <img
-          onClick={() => setExtended((prev) => !prev)}
-          className="menu"
-          src={assets.menu_icon}
-          alt=""
-        />
-        <div onClick={() => newChat()} className="new-chat">
-          <img src={assets.plus_icon} alt="" />
-          {extended ? <p>New Chat</p> : null}
-        </div>
-        {extended ? (
-          <div className="recent">
-            <p className="recent-title">Recent Chats</p>
-            {prevPrompts.map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  onClick={() => loadPrompt(item)}
-                  className="recent-entry"
-                >
-                  <img src={assets.message_icon} alt="" />
-                  <p>{item.prompt.slice(0, 18)} ...</p>
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
-      </div>
-      <NavLink
-        to="/BusinessAI"
-        className={({ isActive }) =>
-          `sidebar-link ${isActive ? "active-link" : ""}`
-        }
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="25"
-          height="25"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="#333030"
-            d="m20.713 7.128l-.246.566a.506.506 0 0 1-.934 0l-.246-.566a4.36 4.36 0 0 0-2.22-2.25l-.759-.339a.53.53 0 0 1 0-.963l.717-.319A4.37 4.37 0 0 0 19.276.931L19.53.32a.506.506 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.718.32a.53.53 0 0 1 0 .962l-.76.338a4.36 4.36 0 0 0-2.219 2.251M9 2a8 8 0 0 1 7.934 6.965l2.25 3.539c.148.233.118.58-.225.728L17 14.07V17a2 2 0 0 1-2 2h-1.999L13 22H4v-3.694c0-1.18-.436-2.297-1.244-3.305A8 8 0 0 1 9 2m12.154 16.102l-1.665-1.11A8.96 8.96 0 0 0 21 12q-.001-.767-.124-1.5l1.943-.5q.18.975.181 2c0 2.258-.68 4.356-1.846 6.102"
-          />
-        </svg>
-        {extended ? <span>New AI Page</span> : null}
-      </NavLink>
-      <NavLink
-        to="/BusinessInfoUpload"
+        <div className="sidebar-header">
+      <img
+        onClick={() => setExtended((prev) => !prev)}
+        className="menu"
+        src={assets.menu_icon}
+        alt="Menu"
+      />
+    </div>
+
+    <NavLink
+        to="/"
         className={({ isActive }) =>
           `sidebar-link ${isActive ? "active-link" : ""}`
         }
@@ -84,8 +38,9 @@ const Sidebar = () => {
         </svg>
         {extended ? <span>Set Business Info</span> : null}
       </NavLink>
+
       <NavLink
-        to="/ImageAI"
+        to="/businessAI"
         className={({ isActive }) =>
           `sidebar-link ${isActive ? "active-link" : ""}`
         }
@@ -98,10 +53,10 @@ const Sidebar = () => {
         >
           <path
             fill="#333030"
-            d="M23.451 5.906a6.98 6.98 0 0 0-5.375-5.39C16.727.204 14.508 0 12 0S7.273.204 5.924.516a6.98 6.98 0 0 0-5.375 5.39C.237 7.26.034 9.485.034 12s.203 4.74.515 6.094a6.98 6.98 0 0 0 5.375 5.39C7.273 23.796 9.492 24 12 24s4.727-.204 6.076-.516a6.98 6.98 0 0 0 5.375-5.39c.311-1.354.515-3.578.515-6.094c0-2.515-.203-4.74-.515-6.094m-5.873 12.396l-.003.001c-.428.152-1.165.283-2.102.377l-.147.014a.44.44 0 0 1-.45-.271a1.82 1.82 0 0 0-1.296-1.074c-.351-.081-.928-.134-1.58-.134s-1.229.053-1.58.134a1.82 1.82 0 0 0-1.291 1.062a.47.47 0 0 1-.471.281l-.129-.012c-.938-.094-1.676-.224-2.105-.377l-.003-.001a.76.76 0 0 1-.492-.713q.001-.049.005-.098c.073-.979.666-3.272 1.552-5.89C8.5 8.609 9.559 6.187 10.037 5.714a1 1 0 0 1 .404-.26l.004-.002c.314-.106.892-.178 1.554-.178c.663 0 1.241.071 1.554.178l.005.002a1 1 0 0 1 .405.26c.478.472 1.537 2.895 2.549 5.887c.886 2.617 1.479 4.91 1.552 5.89q.004.049.005.098a.76.76 0 0 1-.491.713"
+            d="m20.713 7.128l-.246.566a.506.506 0 0 1-.934 0l-.246-.566a4.36 4.36 0 0 0-2.22-2.25l-.759-.339a.53.53 0 0 1 0-.963l.717-.319A4.37 4.37 0 0 0 19.276.931L19.53.32a.506.506 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.718.32a.53.53 0 0 1 0 .962l-.76.338a4.36 4.36 0 0 0-2.219 2.251M9 2a8 8 0 0 1 7.934 6.965l2.25 3.539c.148.233.118.58-.225.728L17 14.07V17a2 2 0 0 1-2 2h-1.999L13 22H4v-3.694c0-1.18-.436-2.297-1.244-3.305A8 8 0 0 1 9 2m12.154 16.102l-1.665-1.11A8.96 8.96 0 0 0 21 12q-.001-.767-.124-1.5l1.943-.5q.18.975.181 2c0 2.258-.68 4.356-1.846 6.102"
           />
         </svg>
-        {extended ? <span>Image AI Assistant</span> : null}
+        {extended ? <span>Business AI</span> : null}
       </NavLink>
 
       <NavLink
@@ -127,21 +82,28 @@ const Sidebar = () => {
         </svg>
         {extended ? <span>Image Upload</span> : null}
       </NavLink>
+    
+      <NavLink
+        to="/ImageAI"
+        className={({ isActive }) =>
+          `sidebar-link ${isActive ? "active-link" : ""}`
+        }
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="#333030"
+            d="M23.451 5.906a6.98 6.98 0 0 0-5.375-5.39C16.727.204 14.508 0 12 0S7.273.204 5.924.516a6.98 6.98 0 0 0-5.375 5.39C.237 7.26.034 9.485.034 12s.203 4.74.515 6.094a6.98 6.98 0 0 0 5.375 5.39C7.273 23.796 9.492 24 12 24s4.727-.204 6.076-.516a6.98 6.98 0 0 0 5.375-5.39c.311-1.354.515-3.578.515-6.094c0-2.515-.203-4.74-.515-6.094m-5.873 12.396l-.003.001c-.428.152-1.165.283-2.102.377l-.147.014a.44.44 0 0 1-.45-.271a1.82 1.82 0 0 0-1.296-1.074c-.351-.081-.928-.134-1.58-.134s-1.229.053-1.58.134a1.82 1.82 0 0 0-1.291 1.062a.47.47 0 0 1-.471.281l-.129-.012c-.938-.094-1.676-.224-2.105-.377l-.003-.001a.76.76 0 0 1-.492-.713q.001-.049.005-.098c.073-.979.666-3.272 1.552-5.89C8.5 8.609 9.559 6.187 10.037 5.714a1 1 0 0 1 .404-.26l.004-.002c.314-.106.892-.178 1.554-.178c.663 0 1.241.071 1.554.178l.005.002a1 1 0 0 1 .405.26c.478.472 1.537 2.895 2.549 5.887c.886 2.617 1.479 4.91 1.552 5.89q.004.049.005.098a.76.76 0 0 1-.491.713"
+          />
+        </svg>
+        {extended ? <span>Image AI Assistant</span> : null}
+      </NavLink>
 
-      <div className="bottom">
-        <div className="bottom-item recent-entry">
-          <img src={assets.question_icon} alt="" />
-          {extended ? <p>Help</p> : null}
-        </div>
-        <div className="bottom-item recent-entry">
-          <img src={assets.history_icon} alt="" />
-          {extended ? <p>Activity</p> : null}
-        </div>
-        <div className="bottom-item recent-entry">
-          <img src={assets.setting_icon} alt="" />
-          {extended ? <p>Setting</p> : null}
-        </div>
-      </div>
+     
     </div>
   );
 };
